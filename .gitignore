@@ -1,0 +1,15 @@
+# Claude Code
+.claude/
+
+# Office documents (source material, not part of the site)
+*.docx
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Editor
+.vscode/
+*.swp
+*.swo

@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediPal — Hackathon Pitch</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      --bg-primary: #0a0e1a;
+      --bg-secondary: #111827;
+      --bg-card: #1a2236;
+      --accent: #3b82f6;
+      --accent-light: #60a5fa;
+      --accent-glow: rgba(59, 130, 246, 0.3);
+      --accent-warm: #f59e0b;
+      --accent-danger: #ef4444;
+      --accent-success: #10b981;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --gradient-blue: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      --gradient-warm: linear-gradient(135deg, #f59e0b, #ef4444);
+      --gradient-health: linear-gradient(135deg, #10b981, #3b82f6);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Slide Container ── */
+    .deck {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 80px;
+      opacity: 0;
+      transform: translateX(60px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .slide.exit-left {
+      opacity: 0;
+      transform: translateX(-60px);
+    }
+
+    /* ── Typography ── */
+    h1 {
+      font-size: 3.6rem;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    p,
+    li {
+      font-size: 1.25rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    .subtitle {
+      font-size: 1.5rem;
+      font-weight: 400;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+
+    .highlight {
+      background: var(--gradient-blue);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .highlight-warm {
+      background: var(--gradient-warm);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .highlight-health {
+      background: var(--gradient-health);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .big-number {
+      font-size: 4.5rem;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-top: 8px;
+    }
+
+    /* ── Layout helpers ── */
+    .text-center {
+      text-align: center;
+    }
+
+    .text-left {
+      text-align: left;
+    }
+
+    .w-full {
+      width: 100%;
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    .flex-col {
+      flex-direction: column;
+    }
+
+    .gap-40 {
+      gap: 40px;
+    }
+
+    .gap-24 {
+      gap: 24px;
+    }
+
+    .gap-16 {
+      gap: 16px;
+    }
+
+    .items-center {
+      align-items: center;
+    }
+
+    .justify-center {
+      justify-content: center;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      width: 100%;
+      max-width: 1200px;
+      align-items: center;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 32px;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .four-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 28px;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 32px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-accent {
+      border-top: 3px solid var(--accent);
+    }
+
+    .card-warm {
+      border-top: 3px solid var(--accent-warm);
+    }
+
+    .card-danger {
+      border-top: 3px solid var(--accent-danger);
+    }
+
+    .card-success {
+      border-top: 3px solid var(--accent-success);
+    }
+
+    /* ── Stat blocks ── */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    .stat-block {
+      text-align: center;
+      padding: 24px;
+    }
+
+    /* ── Icons (emoji-based) ── */
+    .icon-large {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .icon-medium {
+      font-size: 2rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    /* ── Chat mockup ── */
+    .chat-window {
+      background: #0f1623;
+      border-radius: 20px;
+      padding: 28px;
+      width: 100%;
+      max-width: 520px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: 20px;
+    }
+
+    .chat-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--gradient-health);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .chat-name {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text-primary);
+    }
+
+    .chat-status {
+      font-size: 0.8rem;
+      color: var(--accent-success);
+    }
+
+    .msg {
+      margin-bottom: 14px;
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--text-primary);
+      animation: msgIn 0.4s ease forwards;
+    }
+
+    .msg-user {
+      background: var(--accent);
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+      color: white;
+    }
+
+    .msg-bot {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg-voice {
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-bottom-left-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+    }
+
+    .voice-wave {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      height: 24px;
+    }
+
+    .voice-bar {
+      width: 3px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 2px;
+      animation: wave 0.8s ease-in-out infinite;
+    }
+
+    .voice-bar:nth-child(1) {
+      height: 8px;
+      animation-delay: 0s;
+    }
+
+    .voice-bar:nth-child(2) {
+      height: 16px;
+      animation-delay: 0.1s;
+    }
+
+    .voice-bar:nth-child(3) {
+      height: 12px;
+      animation-delay: 0.2s;
+    }
+
+    .voice-bar:nth-child(4) {
+      height: 20px;
+      animation-delay: 0.3s;
+    }
+
+    .voice-bar:nth-child(5) {
+      height: 10px;
+      animation-delay: 0.4s;
+    }
+
+    .voice-bar:nth-child(6) {
+      height: 18px;
+      animation-delay: 0.15s;
+    }
+
+    .voice-bar:nth-child(7) {
+      height: 14px;
+      animation-delay: 0.25s;
+    }
+
+    .voice-bar:nth-child(8) {
+      height: 6px;
+      animation-delay: 0.35s;
+    }
+
+    @keyframes wave {
+
+      0%,
+      100% {
+        transform: scaleY(1);
+      }
+
+      50% {
+        transform: scaleY(0.4);
+      }
+    }
+
+    @keyframes msgIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── Architecture diagram ── */
+    .arch-flow {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .arch-node {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 20px 24px;
+      text-align: center;
+      min-width: 150px;
+    }
+
+    .arch-node-primary {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+      border-color: var(--accent);
+    }
+
+    .arch-arrow {
+      font-size: 1.5rem;
+      color: var(--accent);
+    }
+
+    /* ── Progress bar ── */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: var(--gradient-blue);
+      transition: width 0.5s ease;
+      z-index: 100;
+    }
+
+    /* ── Slide counter ── */
+    .slide-counter {
+      position: fixed;
+      bottom: 24px;
+      right: 32px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      z-index: 100;
+    }
+
+    /* ── Timing guide ── */
+    .timing {
+      position: fixed;
+      bottom: 24px;
+      left: 32px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      z-index: 100;
+      opacity: 0.6;
+    }
+
+    /* ── Background effects ── */
+    .bg-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    .bg-glow-blue {
+      background: #3b82f6;
+      top: -200px;
+      right: -200px;
+    }
+
+    .bg-glow-purple {
+      background: #8b5cf6;
+      bottom: -200px;
+      left: -200px;
+    }
+
+    .bg-glow-green {
+      background: #10b981;
+      top: -100px;
+      left: -100px;
+    }
+
+    .bg-glow-amber {
+      background: #f59e0b;
+      bottom: -200px;
+      right: -200px;
+    }
+
+    .bg-glow-red {
+      background: #ef4444;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.08;
+    }
+
+    /* ── Scenario text ── */
+    .scenario {
+      font-size: 2rem;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      max-width: 900px;
+      text-align: center;
+    }
+
+    .scenario em {
+      color: var(--text-primary);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    .scenario .danger {
+      color: var(--accent-danger);
+      font-weight: 600;
+      font-style: normal;
+    }
+
+    /* ── Quote ── */
+    .quote {
+      font-size: 1.8rem;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--text-secondary);
+      max-width: 800px;
+      text-align: center;
+      line-height: 1.6;
+      position: relative;
+      padding: 0 40px;
+    }
+
+    .quote::before {
+      content: '\201C';
+      font-size: 6rem;
+      color: var(--accent);
+      position: absolute;
+      top: -40px;
+      left: -10px;
+      opacity: 0.4;
+      font-family: Georgia, serif;
+    }
+
+    /* ── Tag / badge ── */
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-blue {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--accent-light);
+    }
+
+    .badge-green {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-success);
+    }
+
+    .badge-amber {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--accent-warm);
+    }
+
+    /* ── List styles ── */
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+    }
+
+    .feature-list li .check {
+      color: var(--accent-success);
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* ── Comparison ── */
+    .vs-container {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 40px;
+      align-items: center;
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    .vs-divider {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* ── Roadmap ── */
+    .roadmap-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .roadmap-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .roadmap-dot-active {
+      background: var(--accent-success);
+      box-shadow: 0 0 12px var(--accent-success);
+    }
+
+    .roadmap-dot-next {
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .roadmap-dot-future {
+      background: var(--text-muted);
+    }
+
+    /* ── Keyboard hint ── */
+    .key-hint {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      opacity: 0.4;
+      z-index: 100;
+    }
+
+    /* ── Pulse animation ── */
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    .pulse {
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* ── Staggered fade-in for child elements ── */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .slide.active .stagger>* {
+      opacity: 0;
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .slide.active .stagger>*:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .slide.active .stagger>*:nth-child(2) {
+      animation-delay: 0.25s;
+    }
+
+    .slide.active .stagger>*:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    .slide.active .stagger>*:nth-child(4) {
+      animation-delay: 0.55s;
+    }
+
+    .slide.active .stagger>*:nth-child(5) {
+      animation-delay: 0.7s;
+    }
+
+    .slide.active .stagger>*:nth-child(6) {
+      animation-delay: 0.85s;
+    }
+
+    /* ── Scenario lines reveal one by one ── */
+    @keyframes lineReveal {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+        filter: blur(4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+    }
+
+    .slide.active .scenario-line {
+      opacity: 0;
+      display: block;
+      animation: lineReveal 0.6s ease forwards;
+    }
+
+    .slide.active .scenario-line:nth-child(1) {
+      animation-delay: 0.2s;
+    }
+
+    .slide.active .scenario-line:nth-child(2) {
+      animation-delay: 0.7s;
+    }
+
+    .slide.active .scenario-line:nth-child(3) {
+      animation-delay: 1.2s;
+    }
+
+    .slide.active .scenario-line:nth-child(4) {
+      animation-delay: 1.7s;
+    }
+
+    .slide.active .scenario-line:nth-child(5) {
+      animation-delay: 2.2s;
+    }
+
+    .slide.active .scenario-line:nth-child(6) {
+      animation-delay: 2.8s;
+    }
+
+    /* ── Step connectors (arrows between How It Works cards) ── */
+    .step-connector {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: var(--accent);
+      opacity: 0.5;
+      margin-top: 60px;
+    }
+
+    /* ── LIVE badge ── */
+    @keyframes livePulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6);
+      }
+
+      50% {
+        box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+      }
+    }
+
+    .badge-live {
+      background: var(--accent-danger);
+      color: white;
+      animation: livePulse 1.5s ease-in-out infinite;
+      position: relative;
+    }
+
+    .badge-live::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    /* ── Roadmap timeline vertical line ── */
+    .roadmap-timeline {
+      position: relative;
+      padding-left: 8px;
+    }
+
+    .roadmap-timeline::before {
+      content: '';
+      position: absolute;
+      left: 13px;
+      top: 20px;
+      bottom: 20px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--accent-success), var(--accent), var(--text-muted));
+      border-radius: 2px;
+    }
+
+    /* ── Stat counter shimmer ── */
+    @keyframes shimmer {
+      0% {
+        background-position: -200% center;
+      }
+
+      100% {
+        background-position: 200% center;
+      }
+    }
+
+    .big-number.animated {
+      background-size: 200% auto;
+      animation: shimmer 3s linear infinite;
+    }
+
+    /* ── Architecture node glow on hover ── */
+    .arch-node {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 20px 24px;
+      text-align: center;
+      min-width: 150px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .arch-node:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
+    }
+
+    /* ── Data flow animated arrow ── */
+    @keyframes flowPulse {
+
+      0%,
+      100% {
+        opacity: 0.5;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.15);
+      }
+    }
+
+    .arch-arrow {
+      font-size: 1.5rem;
+      color: var(--accent);
+      animation: flowPulse 2s ease-in-out infinite;
+    }
+
+    /* ── Speaker notes (toggle with N key) ── */
+    .speaker-notes {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.92);
+      border-top: 2px solid var(--accent);
+      padding: 16px 32px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      z-index: 200;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      font-family: 'Inter', sans-serif;
+      max-height: 30vh;
+      overflow-y: auto;
+    }
+
+    .speaker-notes.visible {
+      transform: translateY(0);
+    }
+
+    .speaker-notes strong {
+      color: var(--accent-light);
+      font-weight: 600;
+    }
+
+    /* ── Title animated gradient bg ── */
+    @keyframes gradientShift {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .bg-gradient-shift {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg,
+          rgba(59, 130, 246, 0.08) 0%,
+          rgba(139, 92, 246, 0.06) 25%,
+          rgba(16, 185, 129, 0.06) 50%,
+          rgba(59, 130, 246, 0.08) 75%,
+          rgba(139, 92, 246, 0.06) 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 12s ease infinite;
+      pointer-events: none;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .slide {
+        padding: 40px;
+      }
+
+      h1 {
+        font-size: 2.4rem;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+      }
+
+      .two-col,
+      .three-col,
+      .four-col {
+        grid-template-columns: 1fr;
+      }
+
+      .big-number {
+        font-size: 3rem;
+      }
+
+      .scenario {
+        font-size: 1.4rem;
+      }
+
+      .stat-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .vs-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="progress-bar" id="progressBar"></div>
+  <div class="slide-counter" id="slideCounter"></div>
+  <div class="timing" id="timing"></div>
+  <div class="key-hint">Arrow keys or click to navigate &nbsp;|&nbsp; N = speaker notes</div>
+
+  <div class="deck" id="deck">
+
+    <!-- ====== SLIDE 0: TITLE ====== -->
+    <div class="slide active" data-timing="0:00"
+      data-notes="Open strong. Pause after title. Let the tagline land. Badges reinforce 3 key differentiators.">
+      <div class="bg-gradient-shift"></div>
+      <div class="bg-glow bg-glow-blue"></div>
+      <div class="bg-glow bg-glow-purple"></div>
+      <div class="text-center flex flex-col items-center gap-24 stagger">
+        <div style="font-size: 4.5rem; margin-bottom: -8px;">&#x1F3E5;</div>
+        <h1 style="font-size: 4.2rem;">Medi<span class="highlight">Pal</span></h1>
+        <p class="subtitle" style="max-width: 700px;">
+          The AI assistant that knows your <em style="color: var(--text-primary); font-weight: 600;">medical & dietary
+            needs</em>,
+          <em style="color: var(--text-primary); font-weight: 600;">speaks</em> to
+          foreign personnel(pharmacist,doctor,waiter)<br>and gets you the optimal service
+        </p>
+        <div style="display: flex; gap: 16px; margin-top: 8px;">
+          <span class="badge badge-blue">Privacy-Focused</span>
+          <span class="badge badge-green">Camera & Voice</span>
+          <span class="badge badge-amber">Agentic Deep-Research</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SLIDE 1: THE HOOK ====== -->
+    <div class="slide" data-timing="0:00 – 0:30"
+      data-notes="Slow, deliberate delivery. Pause after each line. Let the tension build. 'What do you do?' should hang in the air.">
+      <div class="bg-glow bg-glow-red"></div>
+      <div class="text-center flex flex-col items-center gap-24">
+        <p class="scenario">
+          <span class="scenario-line">Imagine you're in <em>Bangkok</em>.</span>
+          <span class="scenario-line">You've run out of your <em>blood pressure medication</em>.</span>
+          <span class="scenario-line">The pharmacist doesn't speak English.</span>
+          <span class="scenario-line">You can't remember the compound name.</span>
+          <span class="scenario-line">Your health is <span class="danger">on the line</span>.</span>
+          <span class="scenario-line"
+            style="font-size: 1.6rem; color: var(--text-muted); margin-top: 24px; font-weight: 300;">What do you
+            do?<br><br><br><span style="font-size: 1.1rem;">*For example, "Baby Aspirin" in Thailand is specifically for
+              adults
+              on long-term anti-platelet
+              therapy,
+              not for children due to Reye's syndrome risk.</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- ====== SLIDE 2: THE PROBLEM ====== -->
+    <div class="slide" data-timing="0:30 – 1:15"
+      data-notes="Hit the numbers hard. Point at each stat as you say it. '1.3 million people injured' — let that sink in. Then pivot: 'Translation apps give you words. Patients need medical precision.'">
+      <div class="bg-glow bg-glow-amber"></div>
+      <div class="text-center flex flex-col items-center gap-40 stagger">
+        <div>
+          <h2>This isn't a rare scenario.<br><span class="highlight-warm">It's a global issue.</span></h2>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-block">
+            <div class="big-number highlight-warm" data-count="1.4" data-suffix="B">0</div>
+            <div class="stat-label">international trips per year</div>
+          </div>
+          <div class="stat-block">
+            <div class="big-number highlight-warm" data-count="140" data-suffix="M">0</div>
+            <div class="stat-label">pharmacy visits abroad annually</div>
+          </div>
+          <div class="stat-block">
+            <div class="big-number highlight-warm" data-count="1.3" data-suffix="M">0</div>
+            <div class="stat-label">people injured yearly by<br>medication and treatment errors (WHO, US alone)</div>
+          </div>
+        </div>
+        <p style="font-size: 1.3rem; color: var(--text-secondary); max-width: 800px;">
+          Language barriers are a <strong style="color: var(--accent-danger);">leading contributor</strong> to
+          medication errors.
+          Translation apps give you <em>words</em>. Patients need <em>medical precision</em>.
+        </p>
+      </div>
+    </div>
+
+    <!-- ====== SLIDE 3: THE SOLUTION ====== -->
+    <div class="slide" data-timing="1:15 – 1:30"
+      data-notes="Energy shift — from fear to hope. Emphasize 'interpreter, not translator' — this is our key differentiator. Each card = one beat.">
+      <div class="bg-glow bg-glow-green"></div>
+      <div class="bg-glow bg-glow-blue" style="top: auto; bottom: -200px; right: -200px;"></div>
+      <div class="text-center flex flex-col items-center gap-24">
+        <div>
+          <p
+            style="font-size: 1.1rem; color: var(--accent-success); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">
+            Introducing</p>
+          <h1 style="font-size: 4rem;">Medi<span class="highlight-health">Pal</span></h1>
+          <p class="subtitle" style="margin-top: 8px;">A medical & wellness assistant &mdash; not just a
+            translator.</p>
+        </div>
+        <div class="three-col stagger" style="max-width: 1000px;">
+          <div class="card card-success text-center">
+            <span class="icon-large">&#x1F4AC;</span>
+            <h3>Interprets</h3>
+            <p style="font-size: 1rem;">Understands high stakes context. Surfaces active compounds,
+              drug interactions, and
+              brand names.</p>
+          </div>
+          <div class="card card-accent text-center">
+            <span class="icon-large">&#x1F50A;</span>
+            <h3>Speaks</h3>
+            <p style="font-size: 1rem;">Talks and writes directly to the doctor/pharmacist/waiter in their language.</p>
+          </div>
+          <div class="card card-warm text-center">
+            <span class="icon-large">&#9960;</span>
+            <h3>Protects</h3>
+            <p style="font-size: 1rem;">Flags contraindications, dosage mismatches, and allergies before the wrong
+              pill/treatment/dish
+              is ordered.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SLIDE 4: HOW IT WORKS ====== -->
+    <div class="slide" data-timing="1:30 – 1:45"
+      data-notes="Quick walkthrough. '3 steps. That's it.' Keep it punchy. This sets up the live demo.">
+      <div class="bg-glow bg-glow-blue" style="top: -100px; left: -100px;"></div>
+      <div class="text-center flex flex-col items-center gap-32">
+        <h2>How It Works &mdash; <span class="highlight">3 Simple Steps</span></h2>
+        <div style="display: flex; align-items: stretch; gap: 0; max-width: 1200px; width: 100%;" class="stagger">
+          <div class="card" style="text-align: center; padding: 40px 24px; flex: 1;">
+            <div style="font-size: 1.4rem; font-weight: 800; color: var(--accent); margin-bottom: 16px;">01</div>
+            <span class="icon-large">&#x1F48A;</span>
+            <h3>Store Medical/Dietary Info</h3>
+            <p style="font-size: 1rem;">Tell or show the assistant your medications by using the camera. It
+              auto-identifies active compounds
+              using GDPR compliant AI.</p>
+          </div>
+          <div class="step-connector">&#x27A1;</div>
+          <div class="card" style="text-align: center; padding: 40px 24px; flex: 1;">
+            <div style="font-size: 1.4rem; font-weight: 800; color: var(--accent); margin-bottom: 16px;">02</div>
+            <span class="icon-large">&#x1F3E5;</span>
+            <h3>Enter Pharmacy Mode</h3>
+            <p style="font-size: 1rem;">Type <code
+                style="background: var(--bg-primary); padding: 2px 8px; border-radius: 4px; font-family: 'JetBrains Mono'; font-size: 0.9rem;">/pharmacy</code>
+              and hand the phone to the pharmacist.</p>
+          </div>
+          <div class="step-connector">&#x27A1;</div>
+          <div class="card" style="text-align: center; padding: 40px 24px; flex: 1;">
+            <div style="font-size: 1.4rem; font-weight: 800; color: var(--accent); margin-bottom: 16px;">03</div>
+            <span class="icon-large">&#x2705;</span>
+            <h3>Safe Resolution</h3>
+            <p style="font-size: 1rem;">The assistant speaks to the pharmacist, interprets back, and ensures you get the
+              right medication.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SLIDE 5: LIVE DEMO ====== -->
+    <div class="slide" data-timing="1:45 – 3:45"
+      data-notes="THIS IS THE MAIN EVENT. Switch to Signal. 1) /profile  2) /pharmacy  3) Type English message  4) Wait for Thai voice — TURN UP SPEAKERS  5) 'Pharmacist' types Thai reply  6) Show translation back  7) /endpharmacy. If demo fails, narrate over the chat mockup on this slide.">
+      <div class="bg-glow bg-glow-green" style="opacity: 0.1;"></div>
+      <div class="two-col">
+        <div class="flex flex-col gap-24">
+          <div>
+            <span class="badge badge-live" style="margin-bottom: 16px;">LIVE DEMO</span>
+            <h2 style="margin-top: 12px;">Watch MediPal<br><span class="highlight-health">in action</span></h2>
+          </div>
+          <ul class="feature-list">
+            <li>
+              <span class="check">&#x2713;</span>
+              <span>User's medications stored and ready</span>
+            </li>
+            <li>
+              <span class="check">&#x2713;</span>
+              <span>AI identifies <strong style="color: var(--text-primary);">lisinopril</strong> as the active
+                compound</span>
+            </li>
+            <li>
+              <span class="check">&#x2713;</span>
+              <span>Assistant speaks <strong style="color: var(--text-primary);">Thai</strong> to the pharmacist</span>
+            </li>
+            <li>
+              <span class="check">&#x2713;</span>
+              <span>Pharmacist offers enalapril &mdash; assistant flags it as same drug class</span>
+            </li>
+            <li>
+              <span class="check">&#x2713;</span>
+              <span>Safe substitute confirmed in <strong style="color: var(--accent-success);">under 60
+                  seconds</strong></span>
+            </li>
+          </ul>
+        </div>
+        <div class="chat-window">
+          <div class="chat-header">
+            <div class="chat-avatar">&#x1F3E5;</div>
+            <div>
+              <div class="chat-name">MediPal Assistant</div>
+              <div class="chat-status">&#x25CF; Pharmacy Mode Active</div>
+            </div>
+          </div>
+          <div class="msg msg-user">I ran out of my blood pressure medication</div>
+          <div class="msg msg-bot">I'll explain your situation to the pharmacist, including your Lisinopril 10mg
+            prescription.</div>
+          <div class="msg msg-bot" style="font-size: 0.9rem;">
+            <strong>&#x1F1F9;&#x1F1ED; For the pharmacist:</strong><br>
+            &#x0E2A;&#x0E27;&#x0E31;&#x0E2A;&#x0E14;&#x0E35;&#x0E04;&#x0E23;&#x0E31;&#x0E1A;
+            &#x0E1C;&#x0E39;&#x0E49;&#x0E1B;&#x0E48;&#x0E27;&#x0E22;&#x0E15;&#x0E49;&#x0E2D;&#x0E07;&#x0E01;&#x0E32;&#x0E23;&#x0E22;&#x0E32;&#x0E25;&#x0E14;&#x0E04;&#x0E27;&#x0E32;&#x0E21;&#x0E14;&#x0E31;&#x0E19;&#x0E42;&#x0E25;&#x0E2B;&#x0E34;&#x0E15;...<br>
+            &#x0E2A;&#x0E32;&#x0E23;&#x0E2D;&#x0E2D;&#x0E01;&#x0E24;&#x0E17;&#x0E18;&#x0E34;&#x0E4C;: Lisinopril 10mg
+          </div>
+          <div class="msg msg-voice">
+            <div class="voice-wave">
+              <div class="voice-bar"></div>
+              <div class="voice-bar"></div>
+              <div class="voice-bar"></div>
+              <div class="voice-bar"></div>
+              <div class="voice-bar"></div>
+              <div class="voice-bar"></div>
+              <div class="voice-bar"></div>
+              <div class="voice-bar"></div>
+            </div>
+            <span style="font-size: 0.9rem;">&#x1F50A; Thai voice note &mdash; 0:04</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SLIDE 6: INTERPRETER VS TRANSLATOR ====== -->
+    <div class="slide" data-timing="3:45 – 4:00"
+      data-notes="Side-by-side comparison sells the difference instantly. Point to the red X's on the left, green checks on the right. 'Google gives words. We give the pharmacist everything they need to keep you safe.'">
+      <div class="bg-glow bg-glow-purple" style="top: -200px; right: -200px;"></div>
+      <div class="text-center flex flex-col items-center gap-40">
+        <h2>Not a translator. <span class="highlight">A personal medical interpreter.</span></h2>
+        <div class="vs-container">
+          <div class="card card-danger" style="text-align: center;">
+            <span class="icon-medium" style="opacity: 0.6;">&#x1F4F1;</span>
+            <h3 style="color: var(--accent-danger);">Google Translate</h3>
+            <p style="font-size: 1rem; margin-top: 12px;">"I need my blood pressure medicine"</p>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 8px;">&#x2193;</p>
+            <p style="font-size: 1rem;">
+              "&#x0E09;&#x0E31;&#x0E19;&#x0E15;&#x0E49;&#x0E2D;&#x0E07;&#x0E01;&#x0E32;&#x0E23;&#x0E22;&#x0E32;&#x0E25;&#x0E14;&#x0E04;&#x0E27;&#x0E32;&#x0E21;&#x0E14;&#x0E31;&#x0E19;"
+            </p>
+            <p style="font-size: 0.85rem; color: var(--accent-danger); margin-top: 16px; font-weight: 500;">
+              &#x2717; No compound name<br>
+              &#x2717; No dosage info<br>
+              &#x2717; No safety flags<br>
+              &#x2717; Text only &mdash; pharmacist must read
+            </p>
+          </div>
+          <div class="vs-divider">vs</div>
+          <div class="card card-success" style="text-align: center;">
+            <span class="icon-medium">&#x1F3E5;</span>
+            <h3 style="color: var(--accent-success);">MediPal</h3>
+            <p style="font-size: 1rem; margin-top: 12px;">"I need my blood pressure medicine"</p>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 8px;">&#x2193;</p>
+            <p style="font-size: 1rem;"><em>Speaks Thai + shows text:</em><br>
+              Active compound: <strong>Lisinopril 10mg</strong><br>
+              Class: ACE inhibitor<br>
+              Request: equivalent or same compound</p>
+            <p style="font-size: 0.85rem; color: var(--accent-success); margin-top: 16px; font-weight: 500;">
+              &#x2713; Active compound surfaced<br>
+              &#x2713; Dosage included<br>
+              &#x2713; Safety flags active<br>
+              &#x2713; Voice output to pharmacist
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SLIDE 7: ARCHITECTURE ====== -->
+    <div class="slide" data-timing="4:00 – 4:30"
+      data-notes="Keep it high-level. 'Two API calls. That's the entire pipeline.' Signal for reach, Claude for medical reasoning, ElevenLabs for voice. Emphasize the insight: what normally takes 5-6 services, we collapse into 2 API calls.">
+      <div class="bg-glow bg-glow-blue" style="top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.08;">
+      </div>
+      <div class="text-center flex flex-col items-center gap-32">
+        <h2>Technical Architecture</h2>
+        <p style="font-size: 1.15rem; color: var(--text-secondary); max-width: 800px;">
+          Two API calls collapse what normally takes 5&ndash;6 services into a seamless pipeline.
+        </p>
+        <div class="arch-flow" style="gap: 20px;">
+          <div class="arch-node">
+            <div style="font-size: 1.6rem; margin-bottom: 8px;">&#x1F4F1;</div>
+            <div style="font-weight: 600; font-size: 0.95rem;">Signal</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">900M+ users</div>
+          </div>
+          <div class="arch-arrow">&#x27F7;</div>
+          <div class="arch-node arch-node-primary" style="min-width: 200px;">
+            <div style="font-size: 1.6rem; margin-bottom: 8px;">&#x1F916;</div>
+            <div style="font-weight: 600; font-size: 0.95rem;">MediPal Assistant</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Python + asyncio</div>
+            <div style="font-size: 0.75rem; color: var(--accent-light); margin-top: 4px;">Router &bull; State Machine
+              &bull; Profile Mgr</div>
+          </div>
+          <div class="arch-arrow">&#x27F7;</div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="arch-node" style="border-color: rgba(139,92,246,0.4);">
+              <div style="font-size: 1.2rem; margin-bottom: 4px;">&#x1F9E0;</div>
+              <div style="font-weight: 600; font-size: 0.95rem;">Claude API</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Medical reasoning</div>
+            </div>
+            <div class="arch-node" style="border-color: rgba(16,185,129,0.4);">
+              <div style="font-size: 1.2rem; margin-bottom: 4px;">&#x1F50A;</div>
+              <div style="font-weight: 600; font-size: 0.95rem;">ElevenLabs TTS</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">30+ language voice</div>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 24px; margin-top: 8px;">
+          <div class="arch-node" style="padding: 12px 20px;">
+            <div style="font-size: 0.85rem; color: var(--text-muted);">&#x1F5C4; SQLite &mdash; health profiles</div>
+          </div>
+        </div>
+        <div class="four-col" style="margin-top: 16px; max-width: 1100px;">
+          <div style="text-align: center; padding: 16px;">
+            <div style="font-weight: 600; color: var(--accent-light); font-size: 0.9rem;">Language Detection</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Auto-detect in single call</div>
+          </div>
+          <div style="text-align: center; padding: 16px;">
+            <div style="font-weight: 600; color: var(--accent-light); font-size: 0.9rem;">Data Injection</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Med profile as context</div>
+          </div>
+          <div style="text-align: center; padding: 16px;">
+            <div style="font-weight: 600; color: var(--accent-light); font-size: 0.9rem;">Safety Flagging</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Contraindications + dosage</div>
+          </div>
+          <div style="text-align: center; padding: 16px;">
+            <div style="font-weight: 600; color: var(--accent-light); font-size: 0.9rem;">Voice Synthesis</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">&lt;2s generation, OGG native</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SLIDE 8: IMPACT & FEASIBILITY ====== -->
+    <div class="slide" data-timing="4:30 – 4:50"
+      data-notes="Map directly to the 4 judging criteria. Say them by name: Feasibility, Impact, Innovation, Presentation. Each card = 25%. 'We built this to win on every axis.'">
+      <div class="bg-glow bg-glow-green" style="top: -200px; right: -200px;"></div>
+      <div class="bg-glow bg-glow-amber" style="bottom: -200px; left: -200px;"></div>
+      <div class="text-center flex flex-col items-center gap-32">
+        <h2>Why MediPal <span class="highlight-health">wins</span></h2>
+        <br><br>
+        <!-- <p
+          style="font-size: 1rem; color: var(--text-muted); margin-top: -16px; letter-spacing: 0.05em; text-transform: uppercase;">
+          Mapped to each judging criterion &mdash; 25% each</p> -->
+        <div class="four-col stagger" style="max-width: 1200px;">
+          <div class="card card-success" style="text-align: center; padding: 28px 20px;">
+            <span class="icon-medium">&#x2705;</span>
+            <h3 style="font-size: 1.1rem;">Feasibility</h3>
+            <p style="font-size: 0.9rem;">Proven stack. Built and working in ~5 hours. We both went home to sleep before
+              midnight.</p>
+          </div>
+          <div class="card card-warm" style="text-align: center; padding: 28px 20px;">
+            <span class="icon-medium">&#x1F30D;</span>
+            <h3 style="font-size: 1.1rem;">Impact</h3>
+            <p style="font-size: 0.9rem;">140M yearly pharmacy visits and way more restaurant visits. Uses existing
+              channels (e.g. Signal). Saves
+              lives.
+            </p>
+          </div>
+          <div class="card card-accent" style="text-align: center; padding: 28px 20px;">
+            <span class="icon-medium">&#x26A1;</span>
+            <h3 style="font-size: 1.1rem;">Innovation</h3>
+            <p style="font-size: 0.9rem;">First voice-enabled PERSONAL medical assistant. Context-aware, proactive
+              researcher.
+            </p>
+          </div>
+          <div class="card" style="text-align: center; padding: 28px 20px; border-top: 3px solid #8b5cf6;">
+            <span class="icon-medium">&#x1F3A4;</span>
+            <h3 style="font-size: 1.1rem;">Presentation</h3>
+            <p style="font-size: 0.9rem;">Live demo with audible Thai voice. Error correction in terms of dosage.</p>
+          </div>
+        </div>
+        <div style="margin-top: 16px; max-width: 800px;">
+          <p style="font-size: 1.15rem; color: var(--text-secondary); text-align: center;">
+            MediPal doesn't just <em style="color: var(--text-primary);">translate</em> a conversation.<br>
+            It <em style="color: var(--accent-success);">prevents getting the wrong pill/treatment/dish</em>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SLIDE 9: ROADMAP ====== -->
+    <div class="slide" data-timing="4:50 – 5:00"
+      data-notes="Quick pass. Don't dwell. 'What you saw today is step one. Here's where it goes.' Point at 'Today' row, then gesture broadly at the rest. Transition to closing.">
+      <div class="bg-glow bg-glow-purple"></div>
+      <div class="two-col" style="max-width: 1100px;">
+        <div>
+          <h2>Built today.<br><span class="highlight">Scaling globally.</span></h2>
+          <p style="margin-top: 16px; font-size: 1.1rem; color: var(--text-secondary);">
+            MediPal becomes a complete health companion for every traveler.
+          </p>
+        </div>
+        <div class="flex flex-col roadmap-timeline" style="gap: 0;">
+          <div class="roadmap-item">
+            <div class="roadmap-dot roadmap-dot-active"></div>
+            <div>
+              <div style="font-weight: 600; color: var(--accent-success);">Today &mdash; Pharmacy/Medical/Restaurant
+                Interpreter
+              </div>
+              <div style="font-size: 0.9rem; color: var(--text-muted);">Personal health profile, bilingual voice,
+                context
+                aware</div>
+            </div>
+          </div>
+          <div class="roadmap-item">
+            <div class="roadmap-dot roadmap-dot-next"></div>
+            <div>
+              <div style="font-weight: 600; color: var(--accent-light);">Next &mdash; Auto-Research</div>
+              <div style="font-size: 0.9rem; color: var(--text-muted);">Search for medications, conditions, and
+                alternative treatments</div>
+            </div>
+          </div>
+          <div class="roadmap-item">
+            <div class="roadmap-dot roadmap-dot-next"></div>
+            <div>
+              <div style="font-weight: 600; color: var(--accent-light);">Next &mdash; Photo Medication ID</div>
+              <div style="font-size: 0.9rem; color: var(--text-muted);">OCR on pill packaging for instant identification
+              </div>
+            </div>
+          </div>
+          <div class="roadmap-item">
+            <div class="roadmap-dot roadmap-dot-future"></div>
+            <div>
+              <div style="font-weight: 600;">Future &mdash; Food Safety Assistant</div>
+              <div style="font-size: 0.9rem; color: var(--text-muted);">Ingredient scanning for food safety abroad</div>
+            </div>
+          </div>
+          <div class="roadmap-item">
+            <div class="roadmap-dot roadmap-dot-future"></div>
+            <div>
+              <div style="font-weight: 600;">Future &mdash; Health Records Integration</div>
+              <div style="font-size: 0.9rem; color: var(--text-muted);">FHIR/HL7 import, drug interaction checking</div>
+            </div>
+          </div>
+          <div class="roadmap-item" style="border-bottom: none;">
+            <div class="roadmap-dot roadmap-dot-future"></div>
+            <div>
+              <div style="font-weight: 600;">Future &mdash; Multi-Party Sessions & Personal Health Node</div>
+              <div style="font-size: 0.9rem; color: var(--text-muted);">Group chat with family doctor and local
+                pharmacist</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== SLIDE 10: CLOSING ====== -->
+    <div class="slide" data-timing="5:00"
+      data-notes="Slow down. Lower your voice. 'Every traveler deserves to get the right medication.' Pause. 'MediPal stands between a traveler and a dangerous mistake.' Pause. 'Thank you.' — then silence. Let the audience come to you.">
+      <div class="bg-glow bg-glow-blue"></div>
+      <div class="bg-glow bg-glow-green" style="bottom: -200px; right: -200px; opacity: 0.12;"></div>
+      <div class="text-center flex flex-col items-center gap-32">
+        <div style="font-size: 4rem;">&#x1F3E5;</div>
+        <h1 style="font-size: 3.4rem; max-width: 900px;">
+          Every person deserves to<br><span class="highlight-health">live a healthy life</span>.
+        </h1>
+        <p class="quote" style="font-size: 1.5rem; max-width: 800px; font-style: normal; color: var(--text-secondary);">
+          MediPal doesn't just bridge a language gap.<br>
+          It stands as a node between the user and a <strong style="color: var(--accent-danger);">healthy
+            life</strong>.
+        </p>
+        <div style="margin-top: 16px;">
+          <h2 style="font-size: 2.2rem; margin-bottom: 8px;">Med<span class="highlight">Lingua</span></h2>
+          <p style="font-size: 1.15rem; color: var(--text-muted);">
+            Voice-enabled &bull; Multilingual &bull; Life-saving
+          </p>
+        </div>
+        <p style="font-size: 1.2rem; color: var(--accent-light); font-weight: 500; margin-top: 8px;">
+          Thank you.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Speaker notes panel -->
+  <div class="speaker-notes" id="speakerNotes"></div>
+
+  <script>
+    const deck = document.getElementById('deck');
+    const slides = Array.from(deck.querySelectorAll('.slide'));
+    const progressBar = document.getElementById('progressBar');
+    const slideCounter = document.getElementById('slideCounter');
+    const timingEl = document.getElementById('timing');
+    const speakerNotes = document.getElementById('speakerNotes');
+    let current = 0;
+    let notesVisible = false;
+
+    // ── Animated number counter ──
+    function animateCounters(slide) {
+      const counters = slide.querySelectorAll('[data-count]');
+      counters.forEach((el) => {
+        const target = parseFloat(el.getAttribute('data-count'));
+        const suffix = el.getAttribute('data-suffix') || '';
+        const duration = 1200;
+        const start = performance.now();
+        const isDecimal = target % 1 !== 0;
+
+        function tick(now) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          // Ease out cubic
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const value = target * eased;
+          el.textContent = (isDecimal ? value.toFixed(1) : Math.round(value)) + suffix;
+          if (progress < 1) requestAnimationFrame(tick);
+        }
+        // Small delay so the slide transition settles first
+        setTimeout(() => requestAnimationFrame(tick), 300);
+      });
+    }
+
+    function updateSlide(next) {
+      if (next < 0 || next >= slides.length) return;
+      current = next;
+
+      slides.forEach((s, i) => {
+        s.classList.remove('active', 'exit-left');
+        if (i < current) s.classList.add('exit-left');
+      });
+      slides[current].classList.add('active');
+
+      // Progress
+      const pct = (current / (slides.length - 1)) * 100;
+      progressBar.style.width = pct + '%';
+
+      // Counter
+      slideCounter.textContent = `${current + 1} / ${slides.length}`;
+
+      // Timing guide
+      const timing = slides[current].getAttribute('data-timing');
+      if (timing) timingEl.textContent = timing;
+
+      // Speaker notes
+      const notes = slides[current].getAttribute('data-notes');
+      speakerNotes.innerHTML = notes
+        ? '<strong>Notes:</strong> ' + notes
+        : '<em style="color: var(--text-muted);">No notes for this slide.</em>';
+
+      // Animate counters if present
+      animateCounters(slides[current]);
+    }
+
+    // Keyboard
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        updateSlide(current + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+        e.preventDefault();
+        updateSlide(current - 1);
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        updateSlide(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        updateSlide(slides.length - 1);
+      } else if (e.key === 'n' || e.key === 'N') {
+        // Toggle speaker notes
+        notesVisible = !notesVisible;
+        speakerNotes.classList.toggle('visible', notesVisible);
+      }
+    });
+
+    // Click navigation
+    deck.addEventListener('click', (e) => {
+      // Don't navigate if clicking on the speaker notes
+      if (e.target.closest('.speaker-notes')) return;
+      const rect = deck.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      if (x > rect.width / 2) {
+        updateSlide(current + 1);
+      } else {
+        updateSlide(current - 1);
+      }
+    });
+
+    // Touch swipe
+    let touchStartX = 0;
+    deck.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].clientX;
+    });
+    deck.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 50) {
+        updateSlide(dx < 0 ? current + 1 : current - 1);
+      }
+    });
+
+    // Init
+    updateSlide(0);
+  </script>
+</body>
+
+</html>
